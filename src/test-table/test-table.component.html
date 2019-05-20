@@ -1,0 +1,26 @@
+<!-- <app-table-edit
+  [headers]="headers"
+  [dataset]="dataset"
+  >
+</app-table-edit>
+<app-table-edit
+  [headers]="headers"
+  [dataset]="dataset2"
+  [rowOptions]="list"
+  >
+</app-table-edit>
+
+<adp-button (click)="onSubmit($event)">Save</adp-button> -->
+
+<!--['id','firstName','lastName','createdAt','updatedAt', 'Actions']-->
+
+<app-mat-table-edit 
+  [columns]="fields"
+  [data]="tableData"
+  [pagination]="true"
+  [pageSizeOptions]="[5,25,50,100]" 
+  [searchable]="true" 
+  (action)="action($event)"
+  [maxChar]="23">
+</app-mat-table-edit>
+

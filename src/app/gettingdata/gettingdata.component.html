@@ -1,14 +1,15 @@
 
-<input 
-  (keyup.enter)="createPost(title)" #title
-  type="text" class="form-control">
+<mat-form-field>
+  <input matInput (keyup.enter)="createPost(title)" #title type="text" placeholder="Insert tasks">
+</mat-form-field>   
+  
 <ul class="list-group">
   
   <li *ngFor='let post of posts' class="list-group-item">
     {{ post.title }}
 
-    <button (click)="updatePost(post)"
+    <button mat-button (click)="updatePost(post)"
     class="btn btn-defalt btn-sm">Update</button>
-    <button (click)="deletePost(post)" class="btn btn-defalt btn-sm">Delete</button>
+    <button mat-button (click)="deletePost(post)" class="btn btn-defalt btn-sm">Delete</button>
   </li>  
 </ul>

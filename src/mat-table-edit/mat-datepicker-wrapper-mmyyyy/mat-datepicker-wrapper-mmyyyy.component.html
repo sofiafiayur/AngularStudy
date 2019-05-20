@@ -1,0 +1,6 @@
+<mat-form-field>
+  <input [id]="column.id + columnIndex" matInput [matDatepicker]="picker" [placeholder]="column.label" [formControl]="dateControl" (dateChange)="setValue($event)">
+  <mat-datepicker #picker></mat-datepicker>
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+</mat-form-field>
+
