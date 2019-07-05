@@ -1,0 +1,102 @@
+table {
+  width: 100%;
+  height: 50%;
+  }
+.material-icons{
+  font-size: 18px;
+  color: #6a6a6a;
+  cursor: pointer;
+}
+.material-icons:hover {
+  color: #086274;
+  cursor: pointer;
+}
+  
+    .highlight{
+      background:whitesmoke; 
+    }
+
+
+$mat-header-row-height: 28px;
+$mat-row-height: 28px;
+
+tr.mat-row {
+  height: $mat-row-height;
+}
+
+tr.mat-header-row {
+  height: $mat-header-row-height;
+}
+
+.material-spacer {
+  flex: 1 1 auto;
+}
+
+.material-filter {
+  // font-size: 18px;  
+  margin-left:-5px;
+  background: transparent;
+  color: #086274;
+  font-size: small;  
+}
+
+.material-icon-new {
+  font-size: 18px;
+  color: #086274;
+  cursor: pointer;  
+}
+
+.mat-elevation-z8 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 200px;
+}
+
+// Test
+.test1no-wrap {
+  .mat-header-cell, 
+  .mat-header-cell button,
+  .mat-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    max-width: 180px;
+    text-align: left;
+    padding-right: 5px;
+    padding: 0.5em 1em;
+  }
+}
+
+// Test
+.test2no-wrap {
+  .mat-header-cell, 
+  .mat-header-cell button,
+  .mat-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    max-width: 180px;
+    text-align: left;
+  }
+}
+
+// Truncate text in tables with ellipsis
+.no-wrap {
+  .mat-header-cell, 
+  .mat-header-cell button,
+  .mat-cell {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 180px;
+    text-align: left;
+  }
+}
+/*
+td {
+  border: 1px dotted gray;
+}
+*/

@@ -8,9 +8,14 @@ import { CoursesComponent } from './courses.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FavoriteComponent } from './favorite/favorite.component';
 import { NewCourseFormComponent } from './new-course-form/new-course-form.component';
-import { AppGettingdataComponent } from './gettingdata/gettingdata.component';
 import { PostService } from './services/post.service';
-import { HttpModule } from '@angular/http';
+import { HttpModule, Http } from '@angular/http';
+import {GettingdataModule} from './gettingdata/gettingdata.module';
+import { AppDashboardComponent } from './dashboard/dashboard.component';
+import { AppDashboardModule } from './dashboard/dashboard.module';
+import { RouterModule } from '@angular/router';
+import { AppGettingdataComponent } from './gettingdata/gettingdata.component';
+import { TestTableComponent } from './test-table/test-table.component';
 // import 'rxjs/add/operator/catch';
 
 @NgModule({
@@ -19,15 +24,38 @@ import { HttpModule } from '@angular/http';
     AuthorsComponent,
     CoursesComponent,
     FavoriteComponent,
-    // NewCourseFormComponent,
-    AppGettingdataComponent
+    NewCourseFormComponent,
 
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
+    GettingdataModule,
+    AppDashboardModule,
     HttpModule,
-    ReactiveFormsModule
+    RouterModule.forRoot([
+      /* {
+        path: '',
+        component: AppDashboardComponent
+      }, */
+      {
+        path: 'todolist',
+        component: AppGettingdataComponent
+      },
+      {
+        path: 'userdata_table',
+        component: TestTableComponent
+      },
+      {
+        path: 'new-course-form',
+        component: NewCourseFormComponent
+      },
+      /* {
+        path: '**',
+        component: AppDashboardComponent
+      } */
+    ])
   ],
   providers: [AuthorsService, PostService],
   bootstrap: [AppComponent],

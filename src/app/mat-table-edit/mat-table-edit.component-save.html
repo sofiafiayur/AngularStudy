@@ -1,0 +1,156 @@
+<table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" (keyup.enter)="onEnter($event)">
+
+  <!--  Columns -->
+  <ng-container *ngFor="let column of columns; let i = index" matColumnDef="{{column}}">
+
+    <th mat-header-cell *matHeaderCellDef> {{column.id.toUpperCase()}} </th>
+
+    <td mat-cell *matCellDef="let data; let j = index">
+
+      <!-- When Nothing is Ediatble -->
+      
+      <p *ngIf="j!==k" (dblclick)="selectColumn(i, j)">{{data[column]}}</p>
+
+      <!-- When only Provided fields are editable -->
+      <div *ngIf="(j===k && column.id.toLowerCase()!=='actions') && (editableFields && editableFields.indexOf(column) !== -1)">
+        <!-- Editable text box -->
+
+        <div *ngIf="(dateFields.indexOf(column) === -1)">
+          <mat-form-field>
+            <!-- Spinner -->
+            <!-- <ngx-spinner bdColor="white" size="small" color="#03a9f4" type="square-loader">
+            </ngx-spinner> -->
+
+            <!-- <input *ngIf="i>1"  matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column.toUpperCase()}}" [value]="data[column]" [(ngModel)]="data[column]"> -->
+            <input [id]="getElementId('input',i)"  matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column.id.toUpperCase()}}" [value]="data[column]" [(ngModel)]="data[column]" >
+            <mat-hint align="end" *ngIf="(maxCharsInColumn && (dateFields.indexOf(column) === -1))">{{data[column]?.length || 0}}/{{maxCharsInColumn}}</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div *ngIf="(dateFields && dateFields.indexOf(column) !== -1)">
+
+          <mat-form-field>
+            <!-- Spinner -->
+            <!-- <ngx-spinner bdColor="white" size="small" color="#03a9f4" type="square-loader">
+            </ngx-spinner> -->
+            <input [id]="getElementId('dateInput',i)" matInput #dateInput [matDatepicker]="picker" placeholder="PICK A DATE" [value]="data[column]" [(ngModel)]="data[column]">
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          </mat-form-field>
+        </div>
+
+
+      </div>
+      <!-- When All fields are editable -->
+      <div *ngIf="(j===k && column.id.toLowerCase()!=='actions') && (!editableFields)">
+
+        <!-- Editable text box -->
+        <div *ngIf="(dateFields.indexOf(column) === -1)">
+          <mat-form-field>
+            <!-- Spinner -->
+            <!-- <ngx-spinner bdColor="white" size="small" color="#03a9f4" type="square-loader">
+            </ngx-spinner> -->
+            <!-- <input *ngIf="i>1"  matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column.toUpperCase()}}" [value]="data[column]" [(ngModel)]="data[column]"> -->
+            <input [id]="getElementId('textBox',i)" matInput #input maxlength="{{maxCharsInColumn}}" placeholder="{{column.id.toUpperCase()}}" [value]="data[column]" [(ngModel)]="data[column]"
+              autofocus>
+            <mat-hint align="end" *ngIf="(maxCharsInColumn && (dateFields.indexOf(column) === -1))">{{data[column]?.length || 0}}/{{maxCharsInColumn}}</mat-hint>
+          </mat-form-field>
+        </div>
+
+
+        <div *ngIf="(dateFields && dateFields.indexOf(column) !== -1)">
+
+          <mat-form-field>
+            <!-- Spinner -->
+            <!-- <ngx-spinner bdColor="white" size="small" color="#03a9f4" type="square-loader">
+            </ngx-spinner> -->
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <input [id]="getElementId('datePicker',i)" matInput [matDatepicker]="picker" placeholder="PICK A DATE" [value]="data[column]" [(ngModel)]="data[column]">
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <!-- Actions icons -->
+
+      <!-- <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j!==k )" matTooltip="Delete row" class="material-icons" color="primary"
+        (click)="openDialog(data)">remove_circle</mat-icon> -->
+      <mat-icon class="material-icons" *ngIf="(column && column.id.toLowerCase()==='actions' && j!==k )">
+        <i class="fa fa-trash"   
+           (click)="openDialog(data)"></i>
+      </mat-icon>
+            
+      <mat-icon class="material-icons" *ngIf="(column && column.id.toLowerCase()==='actions' && j!==k )">
+        <i class="fa fa-edit" id='edit{{j}}'  
+           (click)="openEdit(data, j)"></i>
+      </mat-icon>
+          
+              
+      <!-- <mat-icon id='edit{{j}}' *ngIf="(column && column.toLowerCase()==='actions' && j!==k )"  class="material-icons"
+           (click)="openEdit(data, j)">mode_edit</mat-icon>  -->
+        
+      <!-- <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j===k )"  class="material-icons" 
+           (click)="doneEdit(data)">done</mat-icon> -->
+      <mat-icon class="material-icons" *ngIf="(column && column.id.toLowerCase()==='actions' && j==k )">
+        <i class="fa fa-check"
+           (click)="doneEdit(data)"></i>
+      </mat-icon>
+      <mat-icon class="material-icons" *ngIf="(column && column.id.toLowerCase()==='actions' && j==k )">
+        <i class="fa fa-times"
+           (click)="closeEdit(data)"></i>
+      </mat-icon>
+
+      <!-- <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j===k )"  class="material-icons" 
+      (click)="closeEdit(data)">clear</mat-icon> -->
+          
+            
+      
+    </td>
+
+    <!-- <td >
+        <div class="mat-table-icon">
+            <i class="fa fa-trash" *ngIf="(column && column.toLowerCase()==='actions' && j!==k )"  
+            (click)="openDialog(data)"></i>
+          </div>
+    </td> -->
+  
+    <!-- <td >
+      <div class="mat-table-icon">
+        <i class="fa fa-edit" id='edit{{j}}' *ngIf="(column && column.toLowerCase()==='actions' && j!==k )"  
+           (click)="openEdit(data, j)"></i>
+      </div>  
+    </td> -->
+        
+            
+            <!-- <mat-icon id='edit{{j}}' *ngIf="(column && column.toLowerCase()==='actions' && j!==k )"  class="material-icons"
+               (click)="openEdit(data, j)">mode_edit</mat-icon> -->
+      
+            <!-- <mat-icon *ngIf="(column && column.toLowerCase()==='actions' && j===k )"  class="material-icons" 
+              (click)="doneEdit(data)">done</mat-icon> -->
+
+        <!-- <td >
+            <div class="mat-table-icon">
+                <i class="fa fa-check" *ngIf="(column && column.toLowerCase()==='actions' && j===k )"  
+                (click)="doneEdit(data)"></i>
+              </div>
+        </td>
+
+        <td >
+            <div class="mat-table-icon">
+                <i class="fa fa-times" *ngIf="(column && column.toLowerCase()==='actions' && j===k )"  
+                (click)="closeEdit(data)"></i>
+              </div>
+        </td> -->
+          
+
+
+  </ng-container>
+
+  <!-- Rows -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+
+</table>
+
+<mat-paginator [pageSizeOptions]="paginationOptions" showFirstLastButtons></mat-paginator>

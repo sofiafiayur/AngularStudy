@@ -1,0 +1,121 @@
+<!-- Code for button tab -->
+<div class="-toolbar" *ngIf="bNewRow || bFilterRows">
+    <mat-toolbar >
+        <mat-toolbar-row>
+          <mat-icon class="material-icon-new" *ngIf="bNewRow">
+            <i class="fa fa-plus" (click)="addRow(-1, null)"></i>
+          </mat-icon>    
+          <div> <h1>&nbsp;&nbsp;&nbsp;</h1></div>
+          <!--<span class="material-spacer"></span>-->
+          <span class="material-filter" *ngIf="bFilterRows">
+                <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Ricerca">
+                </mat-form-field>                  
+          </span>
+        </mat-toolbar-row>        
+    </mat-toolbar>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="no-wrap" matSort (keyup.enter)="onEnter($event)">
+
+  <!--  Columns -->
+  <ng-container *ngFor="let column of columns; let i = index" matColumnDef="{{column.id}}" [sticky]="isSticky(column)">
+
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column.label.toUpperCase()}} </th>
+
+    <td mat-cell *matCellDef="let data; let j = index">
+
+      <!-- No edit mode -->
+      <p *ngIf="j!==k && column.type!=='actions'" (dblclick)="selectColumn(column,i, j)">{{data[column.id]}}</p>
+
+      <!-- Actions icons -->
+      <div *ngIf="column && column.type==='actions'">
+
+          <mat-icon class="material-icons" *ngIf="j!==k && bDeleteRow">
+            <i class="fa fa-trash"
+                (click)="openDialog(data, j, 'd')"></i>
+          </mat-icon>
+          <mat-icon class="material-icons" *ngIf="j!==k && bEditRow">
+            <i class="fa fa-edit" id='edit{{j}}'
+                (click)="openEdit(data, j)"></i> 
+          </mat-icon>
+          <mat-icon class="material-icons" *ngIf="j!==k && bCopyRow">
+            <i class="fa fa-copy" id='edit{{j}}'
+                (click)="openCopy(data, j)"></i>
+          </mat-icon>
+  
+          <mat-icon class="material-icons" *ngIf="j==k">
+            <i class="fa fa-check"
+                (click)="doneEdit(data, -1)"></i>
+          </mat-icon>
+          <mat-icon class="material-icons" *ngIf="j==k">
+            <i class="fa fa-times"
+                (click)="closeEdit(data)"></i>
+          </mat-icon>
+  
+      </div>
+  
+      <!-- Edit mode -->
+      <div *ngIf="j==k && column.type!=='actions'">
+
+        <!-- Not editable column -->
+        <div *ngIf="!column.editable">
+            <mat-form-field>
+              <input [id]="column.id + i"  readonly matInput [value]="data[column.id]" [(ngModel)]="data[column.id]" >
+            </mat-form-field>          
+        </div>         
+
+        <!-- Editable - input type -->
+        <div *ngIf="column.editable &&  column.type === 'input'">
+          <mat-form-field>
+            <!-- SZ 18/04/2019            
+            <input [id]="column.id + i"  matInput maxlength="{{maxCharsInColumn}}" placeholder="{{column.id.toUpperCase()}}" [value]="data[column.id]" [(ngModel)]="data[column.id]" > -->
+            <!-- SZ 02/05/2019            
+            <input [id]="column.id + i"  matInput maxlength="{{maxCharsInColumn}}" placeholder="{{column.label.toUpperCase()}}" [value]="data[column.id]" [(ngModel)]="data[column.id]" > 
+            <input [id]="column.id + i"  *ngIf="(data[column.length])" matInput maxlength="{{data[column.length]}}" placeholder="{{column.label.toUpperCase()}}" [value]="data[column.id]" [(ngModel)]="data[column.id]" >
+            <input [id]="column.id + i"  *ngIf="!(data[column.length])" matInput placeholder="{{column.label.toUpperCase()}}" [value]="data[column.id]" [(ngModel)]="data[column.id]" >-->
+            <input [id]="column.id + i"  matInput (change)="fieldChange($event, j, data)" placeholder="{{column.label.toUpperCase()}}" [value]="data[column.id]" [(ngModel)]="data[column.id]" >
+            <mat-hint align="end" *ngIf="(maxCharsInColumn)">{{data[column.id]?.length || 0}}/{{maxCharsInColumn}}</mat-hint>
+          </mat-form-field>
+        </div>
+        <!-- Editable - date type -->
+        <div *ngIf="column.editable && column.type === 'date'" [ngSwitch]="column.dateFormat">
+
+          <!-- Due to Material Datepicker lack of date format intelligence we must have one component for each date format managed by the application -->
+          <app-mat-datepicker-wrapper-mmyyyy *ngSwitchCase="'MM/YYYY'" [column]="column" [columnIndex]="i" [data]="data" ></app-mat-datepicker-wrapper-mmyyyy>
+          <app-mat-datepicker-wrapper *ngSwitchDefault [column]="column" [columnIndex]="i" [data]="data" ></app-mat-datepicker-wrapper>
+
+
+          <!--<mat-form-field>-->
+            <!--<input [id]="column.id + i" matInput [matDatepicker]="picker" placeholder="PICK A DATE" [value]="data[column.id]" [(ngModel)]="data[column.id]" >-->
+            <!--<mat-datepicker #picker></mat-datepicker>-->
+            <!--<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
+          <!--</mat-form-field>-->
+
+        </div>
+
+        <!-- Editable - autocomplete type -->
+        <div *ngIf="column.editable && column.type === 'autocomplete'">
+          <mat-form-field>
+            <input [id]="column.id + i" [attr.aria-label]="column.id.toUpperCase()"  matInput (change)="fieldChange($event, j, data)" placeholder="{{column.label.toUpperCase()}}" [(ngModel)]="data[column.id]" [matAutocomplete]="auto" >
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of column.options | async" [value]="option.key">
+                <small>{{option.value}}</small>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </td>
+
+  </ng-container>
+
+  <!-- Rows -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'highlight': selectedRowIndex == row.id}"></tr>
+
+</table>
+<mat-paginator *ngIf="pagination" [pageSizeOptions]="paginationOptions" (page) = "pageEvent($event)" showFirstLastButtons ></mat-paginator>

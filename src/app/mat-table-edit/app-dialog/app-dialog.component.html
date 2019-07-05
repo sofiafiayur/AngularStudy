@@ -1,0 +1,46 @@
+
+<div *ngIf="!data.columns">Confermi cancellazione riga?</div>
+<br/>
+<div *ngIf="!data.columns">
+  <mat-dialog-actions>
+    <button class="mat-raised-button mat-primary" (click)="delete()">Delete</button>
+    <button class="mat-raised-button" (click)="close('')">Cancel</button>
+  </mat-dialog-actions>
+</div>
+
+
+<!-- Add/Edit a row -->
+<!--<div *ngIf="data.columns">-->
+<div *ngIf="operation !== 'd'">
+  <p mat-dialog-title>Dettaglio</p>
+  <mat-dialog-content>
+    <ng-container *ngFor="let column of data.columns; let i = index">
+      <!--
+      <mat-form-field class="example-full-width" [formGroup]="addupForm" *ngIf=" data.dateFields && data.dateFields.indexOf(column) === -1 && column.toUpperCase()!=='ID' && column.toUpperCase()!=='ACTIONS'">
+        <input matInput placeholder="{{column.toUpperCase()}}" formControlName="{{column}}">
+      </mat-form-field>
+      -->
+      <mat-form-field class="example-full-width" [formGroup]="dialogForm" *ngIf=" data && data.data && column.id && column.label && column.id.toUpperCase()!=='ID' && column.id.toUpperCase()!=='ACTIONS'">
+          <input matInput placeholder="{{column.label.toUpperCase()}}" formControlName="{{column.id}}" maxlength="{{column.length}}">
+      </mat-form-field>
+      <div *ngIf="(data.dateFields && data.dateFields.indexOf(column) !== -1)">
+
+        <mat-form-field [formGroup]="dialogForm">
+          <input matInput #dateInput [matDatepicker]="picker" formControlName="{{column}}" placeholder="PICK A DATE" [value]="data[column]"
+            [(ngModel)]="data[column]">
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        </mat-form-field>
+      </div>
+      <br/>
+    </ng-container>
+  </mat-dialog-content>
+</div>
+<br/>
+<!--<div *ngIf="data.columns">-->
+<div *ngIf="operation !== 'd'">
+  <mat-dialog-actions>
+    <button buttonStyle="primary" iconType="save" (click)="confirm(operation)">Conferma</button>
+    <button buttonStyle="secondary" (click)="close(operation)">Annulla</button>
+  </mat-dialog-actions> 
+</div>
